@@ -28,6 +28,14 @@ def create_layout(base_graph_elements):
                             'target-arrow-color': '#ccc',
                             'curve-style': 'bezier'
                         }
+                    },
+                    {
+                        'selector': 'edge:selected',
+                        'style': {
+                            'line-color': '#0074D9',
+                            'target-arrow-color': '#0074D9',
+                            'width': 4
+                        }
                     }
                 ]
                 )
@@ -38,6 +46,8 @@ def create_layout(base_graph_elements):
                 html.Button('Add Edge', id='add-edge-button', n_clicks=0),
                 html.Button('Remove Selected', id='remove-selected-button', n_clicks=0),
                 html.Button('Reset View', id='reset-view-button', n_clicks=0),
+                html.Button('Load Graph', id='load-graph-button', n_clicks=0),
+                html.Button('Clear Graph', id='clear-graph-button', n_clicks=0)
             ], style={'textAlign': 'left', 'marginBottom': '20px'}),
         ])
     ])

@@ -82,10 +82,12 @@ class Graph:
 
     
     def remove_elements(self, selected_nodes, selected_edges):
-        for node in selected_nodes:
-            self.remove_node(node['id'])
-        for edge in selected_edges:
-            self.remove_edge(edge['source'], edge['target'])
+        if selected_nodes is not None:
+            for node in selected_nodes:
+                self.remove_node(node['id'])
+        if selected_edges is not None:
+            for edge in selected_edges:
+                self.remove_edge(edge['source'], edge['target'])
 
 
 def deterministic_layout(G):
