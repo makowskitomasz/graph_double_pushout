@@ -1,55 +1,43 @@
-from dash import html, dcc, Input, Output, callback
+from dash import html, dcc
 import dash_cytoscape as cyto
 
 def create_layout(base_graph_elements):
-    return html.Div([
-        dcc.Store(id='graph-elements-store', data=base_graph_elements),
-        dcc.Store(id='first-line-store'),
-        dcc.Store(id='second-line-store'),
-
-        html.Div(style={'backgroundColor': '#f0f0f0', 'width': '96vw', 'height': '96vh', 'position': 'relative'}),
-
-        # Cytoscape component to display the base graph
-        cyto.Cytoscape(
-            id='base-graph',
-            elements=base_graph_elements,
-            style={
-                'width': '35vw',
-                'height': '70vh',
-                'position': 'absolute',
-                'left': '2vw',
-                'top': '5vh',
-                'border': '2px solid #ccc'
-            },
-            layout={'name': 'preset'},
-            stylesheet=[
-                {
-                    'selector': 'node',
-                    'style': {
-                        'width': '15px',
-                        'height': '15px',
-                        'label': 'data(label)'
-                    }
-                },
-                {
-                    'selector': 'edge',
-                    'style': {
-                        'width': 2,
-                        'line-color': '#ccc',
-                        'target-arrow-shape': 'triangle',
-                        'target-arrow-color': '#ccc',
-                        'curve-style': 'bezier'
-                    }
-                }
-            ]
-        ),
-        
-        # Container for buttons
+    return html.Div([        
         html.Div([
-            html.Button("Add node", id="add-node-button", n_clicks=0, style={'margin': '5px'}),
-            html.Button("Add edge", id="add-edge-button", n_clicks=0, style={'margin': '5px'}),
-            html.Button("Remove node", id="remove-node-button", n_clicks=0, style={'margin': '5px'}),
-            html.Button("Remove edge", id="remove-edge-button", n_clicks=0, style={'margin': '5px'}),
-        ], style={'position': 'absolute', 'left': '40vw', 'top': '5vh', 'display': 'flex', 'flex-direction': 'column'})
-        
-    ], style={'position': 'relative'})
+            html.Div([
+                cyto.Cytoscape(
+                    id='main-graph',
+                    elements=base_graph_elements,
+                    style={'width': '40%', 'height': '60vh', 'backgroundColor': 'white'},
+                    layout={'name': 'preset'},
+                    stylesheet=[
+                    {
+                        'selector': 'node',
+                        'style': {
+                            'width': '15px',
+                            'height': '15px',
+                            'label': 'data(label)'
+                        }
+                    },
+                    {
+                        'selector': 'edge',
+                        'style': {
+                            'width': 2,
+                            'line-color': '#ccc',
+                            'target-arrow-shape': 'triangle',
+                            'target-arrow-color': '#ccc',
+                            'curve-style': 'bezier'
+                        }
+                    }
+                ]
+                )
+            ]),
+
+            html.Div([
+                html.Button('Add Node', id='add-node-button', n_clicks=0),
+                html.Button('Add Edge', id='add-edge-button', n_clicks=0),
+                html.Button('Remove Selected', id='remove-selected-button', n_clicks=0),
+                html.Button('Reset View', id='reset-view-button', n_clicks=0),
+            ], style={'textAlign': 'left', 'marginBottom': '20px'}),
+        ])
+    ])
