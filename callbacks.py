@@ -4,6 +4,7 @@ import dash_cytoscape as cyto
 from ProductionParser import ProductionParser
 from production_graph_store import ProductionGraphStore
 from utils import parse_contents, nx_to_cytoscape_elements, is_subgraph, scale_positions
+import dash
 
 production_parser = ProductionParser()
 graph_store = ProductionGraphStore()
@@ -72,6 +73,41 @@ def register_callbacks(app, base_graph):
         if n_clicks is not None and n_clicks > 0 and current_list:
             return current_list
         return []
+
+    @app.callback(
+        Output('base-graph', 'elements'),
+        [Input('add-node-button', 'n_clicks'),
+         Input('add-edge-button', 'n_clicks'),
+         Input('remove-node-button', 'n_clicks'),
+         Input('remove-edge-button', 'n_clicks')],
+        [State('base-graph', 'elements')]
+    )
+    def update_graph(add_node_clicks, add_edge_clicks, remove_node_clicks, remove_edge_clicks, elements):
+        ctx = dash.callback_context
+
+        if not ctx.triggered:
+            return elements
+
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+        if button_id == 'add-node-button':
+            new_node_id = f'N-{len(elements) + 1}'
+            base_graph.add_node(new_node_id)
+        elif button_id == 'add-edge-button':
+            if len(base_graph.nodes) >= 2:
+                source = base_graph.nodes[-2]
+                target = base_graph.nodes[-1]
+                base_graph.add_edge(source, target)
+        elif button_id == 'remove-node-button':
+            if base_graph.nodes:
+                node_to_remove = base_graph.nodes[-1]
+                base_graph.remove_node(node_to_remove)
+        elif button_id == 'remove-edge-button':
+            if base_graph.edges:
+                edge_to_remove = base_graph.edges[-1]
+                base_graph.remove_edge(edge_to_remove[0], edge_to_remove[1])
+
+        return base_graph.to_cyto_elements()
 
 def create_cytoscape_graph(graph_id, elements):
     """Helper function to create a Cytoscape graph layout."""

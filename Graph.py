@@ -1,6 +1,7 @@
 import pandas as pd
 import networkx as nx
 import numpy as np
+import random
 
 class Graph:
     def __init__(self):
@@ -11,6 +12,7 @@ class Graph:
 
     def add_node(self, node):
         self.graph.add_node(node)
+        self.positions[node] = position_next_node(self)
         self.nodes = list(self.graph.nodes)
         self.edges = list(self.graph.edges)
 
@@ -19,6 +21,18 @@ class Graph:
             self.graph.add_edge(source, target, label=label)
         else:
             self.graph.add_edge(source, target)
+        self.nodes = list(self.graph.nodes)
+        self.edges = list(self.graph.edges)
+
+    def remove_node(self, node):
+        if node in self.graph:
+            self.graph.remove_node(node)
+        self.nodes = list(self.graph.nodes)
+        self.edges = list(self.graph.edges)
+
+    def remove_edge(self, source, target):
+        if self.graph.has_edge(source, target):
+            self.graph.remove_edge(source, target)
         self.nodes = list(self.graph.nodes)
         self.edges = list(self.graph.edges)
 
@@ -72,11 +86,40 @@ def deterministic_layout(G):
     
     return positions
 
-def calculate_position_of_new_node(G: Graph):
-    num_nodes = len(G.nodes)
+def position_next_node(G):
+    num_nodes = len(G.nodes) + 1
     radius = 500
+    def calculate_distance_to_the_closest(G, _x, _y):
+        distances = []
+        for node in G.nodes:
+            x, y = G.positions[node]
+            distance = np.sqrt((_x - x) ** 2 + (_y - y) ** 2)
+            distances.append(distance)
+        return min(distances)
+    
     center_x, center_y = 0, 0
-    angle = 2 * np.pi * num_nodes / (num_nodes + 1)
-    x = center_x + radius * np.cos(angle)
-    y = center_y + radius * np.sin(angle)
-    return x, y
+    i = 0
+    while i < 100:
+        radius_variation = random.randint(0, 100)
+        next_angle = radius_variation * np.pi * (num_nodes - 1) / num_nodes
+        next_x = center_x + radius * np.cos(next_angle)
+        next_y = center_y + radius * np.sin(next_angle)
+        i += 1
+        min_distance = calculate_distance_to_the_closest(G, next_x, next_y)
+        if min_distance > 100:
+            break
+
+    if i == 100:
+        radius = random.randint(100, 600)
+        i = 0
+        while i < 100:
+            radius_variation = random.randint(0, 100)
+            next_angle = radius_variation * np.pi * (num_nodes - 1) / num_nodes
+            next_x = center_x + radius * np.cos(next_angle)
+            next_y = center_y + radius * np.sin(next_angle)
+            i += 1
+            min_distance = calculate_distance_to_the_closest(G, next_x, next_y)
+            if min_distance > 100:
+                break
+        
+    return (next_x, next_y)

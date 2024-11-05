@@ -1,22 +1,24 @@
-from dash import html, dcc
+from dash import html, dcc, Input, Output, callback
 import dash_cytoscape as cyto
 
 def create_layout(base_graph_elements):
     return html.Div([
+        dcc.Store(id='graph-elements-store', data=base_graph_elements),
         dcc.Store(id='first-line-store'),
         dcc.Store(id='second-line-store'),
 
-        html.Div(style={'backgroundColor': '#f0f0f0', 'width': '100vw', 'height': '220vh', 'position': 'relative'}),
+        html.Div(style={'backgroundColor': '#f0f0f0', 'width': '96vw', 'height': '96vh', 'position': 'relative'}),
 
+        # Cytoscape component to display the base graph
         cyto.Cytoscape(
             id='base-graph',
             elements=base_graph_elements,
             style={
-                'width': '40vw',
-                'height': '80vh',
+                'width': '35vw',
+                'height': '70vh',
                 'position': 'absolute',
-                'left': '5vw',
-                'top': '10vh',
+                'left': '2vw',
+                'top': '5vh',
                 'border': '2px solid #ccc'
             },
             layout={'name': 'preset'},
@@ -41,111 +43,13 @@ def create_layout(base_graph_elements):
                 }
             ]
         ),
-
-        html.Div(
-            dcc.Upload(
-                id='upload-data',
-                children=html.Div(['Drag and Drop']),
-                style={
-                    'width': '150px',
-                    'height': '40px',
-                    'lineHeight': '40px',
-                    'borderWidth': '1px',
-                    'borderStyle': 'solid',
-                    'borderRadius': '5px',
-                    'textAlign': 'center',
-                    'margin': '1px'
-                }
-            ),
-            style={'position': 'absolute', 'top': '10vh', 'right': '10vw'}
-        ),
-
+        
+        # Container for buttons
         html.Div([
-            html.Div(id='first-line', style={
-                'width': '300px',
-                'height': '300px',
-                'border': '1px solid #ccc',
-                'display': 'inline-block',
-                'marginRight': '10px'
-            }),
-            html.Div(id='second-line', style={
-                'width': '300px',
-                'height': '300px',
-                'border': '1px solid #ccc',
-                'display': 'inline-block'
-            })
-        ], style={'position': 'absolute', 'top': '25vh', 'right': '10vw'}),
-
-        html.Div(
-            html.Button("Add to the transformation", id="add-production-button", n_clicks=0, disabled=True),
-            style={
-                'position': 'absolute',
-                'top': '70vh',
-                'right': '10vw',
-                'padding': '5px',
-                'border': '1px solid #ccc',
-                'borderRadius': '5px',
-                'textAlign': 'center'
-            }
-        ),
-
-        html.Div(id='production-list', style={
-            'position': 'absolute',
-            'top': '85vh',
-            'right': '10vw',
-            'width': '300px',
-            'border': '1px solid #ccc',
-            'padding': '10px'
-        }),
-
-        html.Div(
-            html.Button("Apply", id='transformation-list-finish'), style={
-            'position': 'absolute',
-            'top': '110vh',
-            'right': '10vw',
-            'width': '50px',
-            'border': '1px solid #ccc',
-            'padding': '10px'
-        }),
-
-        html.Hr(style={
-            'position': 'absolute',
-            'top': '120vh',
-            'width': '150vw'
-        }),
-
-        html.Div(
-            id='base-graph-1',
-            style={
-                'width': '40vw',
-                'height': '80vh',
-                'position': 'absolute',
-                'left': '5vw',
-                'top': '130vh',
-                'border': '2px solid #ccc'
-            }
-        ),
-
-        html.Div(id='production-list-1', style={
-            'position': 'absolute',
-            'top': '130vh',
-            'right': '10vw',
-            'width': '300px',
-            'border': '1px solid #ccc',
-            'padding': '10px'
-        }),
-
-        html.Div(
-            html.Button("NEXT STEP", id="next-step-button", n_clicks=0),
-            style={
-                'position': 'absolute',
-                'top': '170vh',
-                'right': '10vw',
-                'padding': '5px',
-                'border': '1px solid #ccc',
-                'borderRadius': '5px',
-                'textAlign': 'center'
-            }
-        )
+            html.Button("Add node", id="add-node-button", n_clicks=0, style={'margin': '5px'}),
+            html.Button("Add edge", id="add-edge-button", n_clicks=0, style={'margin': '5px'}),
+            html.Button("Remove node", id="remove-node-button", n_clicks=0, style={'margin': '5px'}),
+            html.Button("Remove edge", id="remove-edge-button", n_clicks=0, style={'margin': '5px'}),
+        ], style={'position': 'absolute', 'left': '40vw', 'top': '5vh', 'display': 'flex', 'flex-direction': 'column'})
         
     ], style={'position': 'relative'})
