@@ -23,12 +23,58 @@ def _left_section():
                 style = {
                     'width': '100%',
                     'height': '700px',
-                }
+                },
+                children = [
+                    cyto.Cytoscape(
+                    id='main-graph',
+                    elements = [],
+                    style={'width': '100%', 'height': '100%'},
+                    layout={'name': 'preset'},
+                    stylesheet=[
+                    {
+                        'selector': 'node',
+                        'style': {
+                            'width': '35px',
+                            'height': '35px',
+                            'backgroundColor': 'red',
+                            'label': 'data(label)'
+                        }
+                    },
+                    {
+                        'selector': 'node:selected',
+                        'style': {
+                            'width': '45px',
+                            'height': '45px',
+                            'backgroundColor': 'blue',
+                            'label': 'data(label)'
+                        }
+                    },
+                    {
+                        'selector': 'edge',
+                        'style': {
+                            'width': 4,
+                            'line-color': '#222',
+                            'target-arrow-shape': 'triangle',
+                            'target-arrow-color': '#222',
+                            'curve-style': 'bezier'
+                        }
+                    },
+                    {
+                        'selector': 'edge:selected',
+                        'style': {
+                            'line-color': '#0074D9',
+                            'target-arrow-color': '#0074D9',
+                            'width': 6
+                        }
+                    }
+                ] 
+                    )
+                ]
             ),
             html.Div(
                 className = 'buttonRow',
                 children = [
-                    html.Button('Load Graph', id='load-main-graph-button', className='button normalButton'),
+                    html.Button('Load Graph', id='load-graph-button', className='button normalButton'),
                     html.Button('Add Node', id='add-node-button', className='button normalButton'),
                     html.Button('Add Edge', id='add-edge-button', className='button normalButton'),
                     html.Button('Reset view', id='reset-view-button', className='button normalButton')
@@ -37,9 +83,8 @@ def _left_section():
             html.Div(
                 className = 'buttonRow',
                 children = [
-                    html.Button('Clear Graph', id='clear-main-graph-button', className='button dangerButton'),
-                    html.Button('Remove Node', id='remove-node-button', className='button dangerButton'),
-                    html.Button('Remove Edge', id='remove-edge-button', className='button dangerButton')
+                    html.Button('Clear Graph', id='clear-graph-button', className='button dangerButton'),
+                    html.Button('Remove Selected', id='remove-selected-button', className='button dangerButton')
                 ]
             )
         ]
