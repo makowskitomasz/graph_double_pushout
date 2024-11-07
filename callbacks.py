@@ -1,9 +1,13 @@
 from dash.dependencies import Input, Output, State
-from dash import html
+from dash import html, dcc
 import dash_cytoscape as cyto
 from Graph import Graph
 import dash
 from utils import get_default_graph_layout
+from Graph import deterministic_layout
+from ProductionParser import ProductionParser
+import base64
+import io
 
 def register_callbacks(app, base_graph):
     @app.callback(
@@ -56,3 +60,33 @@ def register_callbacks(app, base_graph):
         if ctx.triggered:
             return get_default_graph_layout()
         return dash.no_update
+
+    @app.callback(
+        [Output('graph-l', 'elements'),
+         Output('graph-k', 'elements'),
+         Output('graph-r', 'elements')],
+        [Input('import-productions-button', 'contents')],
+        prevent_initial_call=True
+    )
+    def import_productions(contents):
+        if contents is None:
+            return dash.no_update, dash.no_update, dash.no_update
+
+        content_type, content_string = contents.split(',')
+        decoded = base64.b64decode(content_string)
+        content = decoded.decode('utf-8')
+
+        parser = ProductionParser()
+        L, K, R = parser.parse_productions(content)
+        l_graph = Graph()
+        k_graph = Graph()
+        r_graph = Graph()
+        l_graph.from_nodes_edges(L.nodes, L.edges)
+        k_graph.from_nodes_edges(K.nodes, K.edges)
+        r_graph.from_nodes_edges(R.nodes, R.edges)
+        deterministic_layout(l_graph.graph)
+        deterministic_layout(k_graph.graph)
+        deterministic_layout(r_graph.graph)
+
+
+        return l_graph.elements, k_graph.elements, r_graph.elements

@@ -41,6 +41,12 @@ class Graph:
             edge_id = f"{source}-{target}"
             self.elements = [el for el in self.elements if el['data']['id'] != edge_id]
 
+    def from_nodes_edges(self, nodes, edges):
+        self.graph.add_nodes_from(nodes)
+        self.graph.add_edges_from(edges)
+        self.positions = deterministic_layout(self.graph)
+        self.elements = self.to_cyto_elements()
+
     def from_csv(self, file_path):
         df = pd.read_csv(file_path)
         self.graph = nx.from_pandas_edgelist(df, 'source', 'target', create_using=nx.DiGraph())
