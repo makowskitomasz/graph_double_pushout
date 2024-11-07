@@ -5,7 +5,7 @@ def layout():
     return html.Div(
         className='content',
         children=[
-            dcc.Store(id='main-graph-data'),
+            dcc.Store(id='main-graph-data', data={'current_index': 0}),
             dcc.Store(id='left-graph-data'),
             dcc.Store(id='right-graph-data'),
             _left_section(),
@@ -28,6 +28,11 @@ def _left_section():
                     html.Div(
                         className='graph-caption',
                         children=['Master Graph']
+                    ),
+                    html.Div(
+                        id='graph-description',
+                        className='graph-description centered',
+                        children=['Base Graph (G)']
                     ),
                     cyto.Cytoscape(
                         id='main-graph',

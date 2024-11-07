@@ -54,6 +54,13 @@
     margin-top: 2px;
 }
 
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 /* Graphs */
 .cytoscape {
     border-radius: 5px;
