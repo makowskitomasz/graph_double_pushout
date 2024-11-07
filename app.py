@@ -1,6 +1,7 @@
 import dash
 from Graph import Graph
 from layout import create_layout
+from new_layout import layout
 from callbacks import register_callbacks
 
 app = dash.Dash(__name__)
@@ -12,7 +13,8 @@ base_graph_elements = base_graph.to_cyto_elements()
 
 register_callbacks(app, base_graph)
 
-app.layout = create_layout(base_graph_elements)
+# app.layout = create_layout(base_graph_elements)
+app.layout = layout()
 
 if __name__ == '__main__':
     app.run_server(debug=True)

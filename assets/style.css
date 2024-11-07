@@ -1,0 +1,120 @@
+/* Buttons */
+.button {
+    width: 150px;
+    margin: 2px;
+    transition: transform 0.1s ease;
+}
+
+.button:active{
+    transform: scale(0.95);
+}
+
+.normalButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.normalButton:hover {
+    background-color: #0056b3;
+}
+
+.dangerButton {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dangerButton:hover {
+    background-color: #c82333;
+}
+
+.secondaryButton {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.secondaryButton:hover {
+    background-color: #5a6268;
+}
+
+.buttonRow {
+    display: flex;
+    justify-content: left;
+    margin-top: 2px;
+}
+
+/* Graphs */
+.cytoscape {
+    border-radius: 5px;
+    background-color: rgb(190, 190, 190);
+}
+
+/* Sections */
+.content {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+}
+
+.leftSection {
+    height: 100%;
+    flex: 6;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.rightSection {
+    height: 100%;
+    flex: 7;
+    margin: 5px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.production-visualizer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+.production-options {
+    display: flex;
+    justify-content: left;
+    gap: 30px;
+    align-items: center;
+}
+
+.production-list {
+    border: 2px solid #cfd0d1;
+    border-radius: 5px;
+}
+
+/* Global */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+    padding: 5px;
+    margin: 0;
+}
+
+html, body {
+    overflow: hidden;
+    height: 100%;
+}

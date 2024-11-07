@@ -62,3 +62,16 @@ def scale_positions(positions, scale_factor):
         scaled_positions[node] = (scaled_x, scaled_y)
     
     return scaled_positions
+
+from datetime import datetime
+
+def get_default_graph_layout():
+    timestamp = datetime.now().isoformat()
+    return {
+        'name': 'preset',
+        'animate': True,
+        'animationDuration': 200,
+        'fit': True,
+        'padding': 50,
+        'randomization': timestamp,
+    }
