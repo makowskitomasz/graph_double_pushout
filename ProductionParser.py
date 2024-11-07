@@ -1,39 +1,32 @@
-import re
-from Graph import Graph
+import networkx as nx
 
 class ProductionParser:
     def __init__(self):
         self.graphs = []
 
     def parse_production(self, production):
-        graph = Graph()
-        reversed = False
-        if '<-' in production:
-            reversed = True 
-        labels = re.findall(r'-[a-zA-Z]-', production)
-        connections = re.split(r'->|<-|-[a-zA-Z]->|<-[a-zA-Z]-', production)
-        if len(connections) == 1:
-            graph.add_node(connections[0])
-        for i in range(len(connections) - 1):
-            if reversed:
-                source = connections[i + 1].strip()
-                target = connections[i].strip()
-            else:
-                source = connections[i].strip()
-                target = connections[i + 1].strip()
-            if i < len(labels):
-                label = labels[i].strip('-')
-                graph.add_edge(source, target, label)
-            else:
-                graph.add_edge(source, target)
-        self.graphs.append(graph)
+        nodes_part, edges_part = production.split(';')
+        nodes = eval(nodes_part)
+        edges = eval(edges_part)
+        
+        graph = nx.DiGraph()
+        graph.add_nodes_from(nodes)
+        graph.add_edges_from(edges)
+        
+        return graph
 
     def parse_productions(self, productions):
-        self.graphs = []
-        for production in productions.split('\n'):
-            production = production.strip()
-            if production:
-                self.parse_production(production)
+        lines = productions.strip().split('\n')
+        if len(lines) != 3:
+            raise ValueError("Input should contain exactly three lines for L, K, and R graphs.")
+        
+        L = self.parse_production(lines[0])
+        K = self.parse_production(lines[1])
+        R = self.parse_production(lines[2])
+        
+        return L, K, R
 
-    def get_graphs(self):
-        return self.graphs
+    def parse_productions_from_file(self, file_path):
+        with open(file_path, 'r') as file:
+            content = file.read()
+        return self.parse_productions(content)
