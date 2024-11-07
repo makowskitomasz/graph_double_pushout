@@ -25,6 +25,10 @@ def _left_section():
                     'height': '700px',
                 },
                 children = [
+                    html.Div(
+                        className = 'graph-caption',
+                        children = ['Master Graph']
+                    ),
                     cyto.Cytoscape(
                     id='main-graph',
                     elements = [],
@@ -95,27 +99,6 @@ def _right_section():
         className = 'rightSection',
         children = [
             html.Div(
-                className = 'production-visualizer',
-                children = [
-                    html.Div(
-                        id = 'production-graph-l',
-                        className = 'cytoscape',
-                        style = {
-                            'height': '450px',
-                            'width': '50%'
-                        }
-                    ),
-                    html.Div(
-                        id = 'production-graph-r',
-                        className = 'cytoscape',
-                        style = {
-                            'height': '450px',
-                            'width': '50%'
-                        }
-                    )
-                ]
-            ),
-            html.Div(
                 className = 'production-options',
                 children = [
                     html.Div(
@@ -148,6 +131,71 @@ def _right_section():
                         className = 'production-list',
                         children = [
                             html.Button('Remove Production', id='remove-production-buttona', className='button secondaryButton')
+                        ]
+                    )
+                ]
+            ),
+            html.Div(
+                className = 'production-visualizer',
+                children = [
+                    html.Div(
+                        id = 'production-graph-l',
+                        className = 'cytoscape',
+                        style = {
+                            'height': '30vh',
+                            'width': '450px'
+                        },
+                        children = [
+                            html.Div(
+                                className = 'graph-caption',
+                                children = ['Graph L']
+                            ),
+                            cyto.Cytoscape(
+                                id='graph-l',
+                                elements = [],
+                                style={'width': '100%', 'height': '100%'},
+                                layout={'name': 'preset'}
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        id = 'production-graph-k',
+                        className = 'cytoscape',
+                        style = {
+                            'height': '30vh',
+                            'width': '450px'
+                        },
+                        children = [
+                            html.Div(
+                                className = 'graph-caption',
+                                children = ['Graph K']
+                            ),
+                            cyto.Cytoscape(
+                                id='graph-k',
+                                elements = [],
+                                style={'width': '100%', 'height': '100%'},
+                                layout={'name': 'preset'}
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        id = 'production-graph-r',
+                        className = 'cytoscape',
+                        style = {
+                            'height': '30vh',
+                            'width': '450px'
+                        },
+                        children = [
+                            html.Div(
+                                className = 'graph-caption',
+                                children = ['Graph R']
+                            ),
+                            cyto.Cytoscape(
+                                id='graph-r',
+                                elements = [],
+                                style={'width': '100%', 'height': '100%'},
+                                layout={'name': 'preset'}
+                            )
                         ]
                     )
                 ]
