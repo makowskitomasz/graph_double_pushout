@@ -1,6 +1,7 @@
 import base64
 import networkx as nx
 import numpy as np
+import itertools
 
 def parse_contents(contents):
     content_type, content_string = contents.split(',')

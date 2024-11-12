@@ -2,7 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 class DoublePushout:
-    def __init__(self, G, L, K, R):
+    def __init__(self, G, L, K, R, show_graphs=False):
         self.G = G  # Original graph G
         self.L = L  # Left graph L
         self.K = K  # Interface graph K
@@ -17,20 +17,20 @@ class DoublePushout:
         mK_nodes = {self.morphism[n] for n in self.K.nodes if n in self.morphism}
         mL_minus_mK_nodes = mL_nodes - mK_nodes
         mL_minus_mK = self.G.subgraph(mL_minus_mK_nodes).copy()
-        self._draw_graph(self.G, highlight=mL_minus_mK, title="m(L) - m(K): Nodes to be removed")
+        # self._draw_graph(self.G, highlight=mL_minus_mK, title="m(L) - m(K): Nodes to be removed")
         return mL_minus_mK
 
     def calculate_Z(self, mL_minus_mK):
         Z = self.G.copy()
         Z.remove_nodes_from(mL_minus_mK.nodes)
-        self._draw_graph(Z, title="Graph Z after removing m(L) - m(K)")
+        # self._draw_graph(Z, title="Graph Z after removing m(L) - m(K)")
         return Z
 
     def calculate_mR_minus_mK(self):
         mK_nodes = set(self.K.nodes)
         mR_minus_mK_nodes = [node for node in self.R.nodes if node not in mK_nodes]
         mR_minus_mK = self.R.subgraph(mR_minus_mK_nodes).copy()
-        self._draw_graph(self.R, highlight=mR_minus_mK, title="m(R) - m(K): Nodes and edges to be added")
+        # self._draw_graph(self.R, highlight=mR_minus_mK, title="m(R) - m(K): Nodes and edges to be added")
         return mR_minus_mK
 
     def create_G_prime(self, Z, mR_minus_mK):
@@ -41,7 +41,7 @@ class DoublePushout:
                 edges_to_add.append(edge)
 
         for index, edge in enumerate(edges_to_add):
-            source, target, frequeny = edge
+            source, target, frequency = edge
             if source in self.morphism.keys():
                 source = self.morphism[source]
             if target in self.morphism.keys():
@@ -50,7 +50,7 @@ class DoublePushout:
 
         self.G_prime = nx.compose(Z, mR_minus_mK)
         self.G_prime.add_edges_from(edges_to_add)
-        self._draw_graph(self.G_prime, title="Final Graph G'")
+        # self._draw_graph(self.G_prime, title="Final Graph G'")
         return self.G_prime
 
     def _draw_graph(self, graph, highlight=None, title=""):

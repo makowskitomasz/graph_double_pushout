@@ -9,6 +9,8 @@ from ProductionParser import ProductionParser
 from DoublePushout import DoublePushout
 import base64
 import io
+from networkx.algorithms.isomorphism import DiGraphMatcher
+import networkx as nx
 
 def register_callbacks(app, base_graph):
     @app.callback(
@@ -87,12 +89,21 @@ def register_callbacks(app, base_graph):
             R.copy_from(r_elements)
 
             dpo = DoublePushout(base_graph.graph, L.graph, K.graph, R.graph)
-            dpo.define_morphism({'A': 'A', 'B': 'G', 'C': 'G'})
+
+            GM = DiGraphMatcher(base_graph.graph, L.graph)
+
+            if GM.subgraph_is_isomorphic():
+                mapping = GM.mapping
+
+            dpo.define_morphism(mapping)
 
             mL_minus_mK = dpo.calculate_mL_minus_mK()
             Z = dpo.calculate_Z(mL_minus_mK)
             mR_minus_mK = dpo.calculate_mR_minus_mK()
             G_prime = dpo.create_G_prime(Z, mR_minus_mK)
+
+            if not nx.is_weakly_connected(Z) or not nx.is_weakly_connected(G_prime):
+                return dash.no_update, dash.no_update, "Please check the input graphs. Cannot apply the DPO production."            
 
             graphs = [base_graph.graph, mL_minus_mK, Z, mR_minus_mK, G_prime]
             graph_elements = []

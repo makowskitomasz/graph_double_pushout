@@ -1,4 +1,5 @@
 source,target
-A,G
-G,F
-F,G
+X,A
+A,B
+B,C
+A,C
