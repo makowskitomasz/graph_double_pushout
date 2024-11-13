@@ -47,7 +47,10 @@ def _left_section():
                                     'height': '50px',
                                     'backgroundColor': 'red',
                                     'label': 'data(label)',
-                                    'font-size': '20px'
+                                    'font-size': '30px',
+                                    'text-valign': 'center',
+                                    'text-halign': 'center',
+                                    'font-weight': 'bold'
                                 }
                             },
                             {
