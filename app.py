@@ -1,6 +1,5 @@
 import dash
 from Graph import Graph
-from layout import create_layout
 from new_layout import layout
 from callbacks import register_callbacks
 

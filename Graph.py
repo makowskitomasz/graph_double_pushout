@@ -9,6 +9,9 @@ class Graph:
         self.positions = {}
         self.elements = []
 
+    def get_elements_data(self):
+        return [element['data'] for element in self.elements]
+    
     def add_node(self, node_id, **attrs):
         self.graph.add_node(node_id, **attrs)
         self.positions[node_id] = calculate_position_of_new_node(self)

@@ -45,7 +45,7 @@ def _left_section():
                                 'style': {
                                     'width': '50px',
                                     'height': '50px',
-                                    'backgroundColor': 'red',
+                                    'backgroundColor': '#16d4fa',
                                     'label': 'data(label)',
                                     'font-size': '20px'
                                 }
@@ -55,7 +55,7 @@ def _left_section():
                                 'style': {
                                     'width': '60px',
                                     'height': '60px',
-                                    'backgroundColor': 'blue',
+                                    'backgroundColor': '#ad3ef7',
                                     'label': 'data(label)',
                                     'font-size': '20px'
                                 }
@@ -64,18 +64,34 @@ def _left_section():
                                 'selector': 'edge',
                                 'style': {
                                     'width': 6,
-                                    'line-color': '#222',
+                                    'line-color': '#16d4fa',
                                     'target-arrow-shape': 'triangle',
-                                    'target-arrow-color': '#222',
+                                    'target-arrow-color': '#16d4fa',
                                     'curve-style': 'bezier'
                                 }
                             },
                             {
                                 'selector': 'edge:selected',
                                 'style': {
-                                    'line-color': '#0074D9',
-                                    'target-arrow-color': '#0074D9',
+                                    'line-color': '#ad3ef7',
+                                    'target-arrow-color': '#ad3ef7',
                                     'width': 8
+                                }
+                            },
+                            {
+                                'selector': '.added',
+                                'style': {
+                                    'line-color': 'green',
+                                    'target-arrow-color': 'green',
+                                    'background-color': 'green',
+                                }
+                            },
+                            {
+                                'selector': '.to-remove',
+                                'style': {
+                                    'line-color': 'red',
+                                    'target-arrow-color': 'red',
+                                    'background-color': 'red',
                                 }
                             }
                         ]
@@ -139,6 +155,12 @@ def _right_section():
                         children=[
                             html.Button('Remove Production', id='remove-production-buttona', className='button secondaryButton')
                         ]
+                    ),
+                    html.Div(
+                        className='feedback',
+                        children = [
+                            html.P(id='feedback', children=[''])
+                        ]
                     )
                 ]
             ),
@@ -168,7 +190,7 @@ def _right_section():
                                         'style': {
                                             'width': '50px',
                                             'height': '50px',
-                                            'backgroundColor': 'red',
+                                            'backgroundColor': '#16d4fa',
                                             'label': 'data(label)',
                                             'font-size': '40px'
                                         }
@@ -178,7 +200,7 @@ def _right_section():
                                         'style': {
                                             'width': '60px',
                                             'height': '60px',
-                                            'backgroundColor': 'blue',
+                                            'backgroundColor': '#ad3ef7',
                                             'label': 'data(label)',
                                             'font-size': '40px'
                                         }
@@ -187,18 +209,34 @@ def _right_section():
                                         'selector': 'edge',
                                         'style': {
                                             'width': 6,
-                                            'line-color': '#222',
+                                            'line-color': '#16d4fa',
                                             'target-arrow-shape': 'triangle',
-                                            'target-arrow-color': '#222',
+                                            'target-arrow-color': '#16d4fa',
                                             'curve-style': 'bezier'
                                         }
                                     },
                                     {
                                         'selector': 'edge:selected',
                                         'style': {
-                                            'line-color': '#0074D9',
-                                            'target-arrow-color': '#0074D9',
+                                            'line-color': '#ad3ef7',
+                                            'target-arrow-color': '#ad3ef7',
                                             'width': 8
+                                        }
+                                    },
+                                    {
+                                        'selector': '.added',
+                                        'style': {
+                                            'line-color': 'green',
+                                            'target-arrow-color': 'green',
+                                            'background-color': 'green',
+                                        }
+                                    },
+                                    {
+                                        'selector': '.to-remove',
+                                        'style': {
+                                            'line-color': 'red',
+                                            'target-arrow-color': 'red',
+                                            'background-color': 'red',
                                         }
                                     }
                                 ]
@@ -228,7 +266,7 @@ def _right_section():
                                         'style': {
                                             'width': '50px',
                                             'height': '50px',
-                                            'backgroundColor': 'red',
+                                            'backgroundColor': '#16d4fa',
                                             'label': 'data(label)',
                                             'font-size': '40px'
                                         }
@@ -238,7 +276,7 @@ def _right_section():
                                         'style': {
                                             'width': '60px',
                                             'height': '60px',
-                                            'backgroundColor': 'blue',
+                                            'backgroundColor': '#ad3ef7',
                                             'label': 'data(label)',
                                             'font-size': '40px'
                                         }
@@ -247,18 +285,34 @@ def _right_section():
                                         'selector': 'edge',
                                         'style': {
                                             'width': 6,
-                                            'line-color': '#222',
+                                            'line-color': '#16d4fa',
                                             'target-arrow-shape': 'triangle',
-                                            'target-arrow-color': '#222',
+                                            'target-arrow-color': '#16d4fa',
                                             'curve-style': 'bezier'
                                         }
                                     },
                                     {
                                         'selector': 'edge:selected',
                                         'style': {
-                                            'line-color': '#0074D9',
-                                            'target-arrow-color': '#0074D9',
+                                            'line-color': '#ad3ef7',
+                                            'target-arrow-color': '#ad3ef7',
                                             'width': 8
+                                        }
+                                    },
+                                    {
+                                        'selector': '.added',
+                                        'style': {
+                                            'line-color': 'green',
+                                            'target-arrow-color': 'green',
+                                            'background-color': 'green',
+                                        }
+                                    },
+                                    {
+                                        'selector': '.to-remove',
+                                        'style': {
+                                            'line-color': 'red',
+                                            'target-arrow-color': 'red',
+                                            'background-color': 'red',
                                         }
                                     }
                                 ]
@@ -288,7 +342,7 @@ def _right_section():
                                         'style': {
                                             'width': '50px',
                                             'height': '50px',
-                                            'backgroundColor': 'red',
+                                            'backgroundColor': '#16d4fa',
                                             'label': 'data(label)',
                                             'font-size': '40px'
                                         }
@@ -298,7 +352,7 @@ def _right_section():
                                         'style': {
                                             'width': '60px',
                                             'height': '60px',
-                                            'backgroundColor': 'blue',
+                                            'backgroundColor': '#ad3ef7',
                                             'label': 'data(label)',
                                             'font-size': '40px'
                                         }
@@ -307,18 +361,34 @@ def _right_section():
                                         'selector': 'edge',
                                         'style': {
                                             'width': 6,
-                                            'line-color': '#222',
+                                            'line-color': '#16d4fa',
                                             'target-arrow-shape': 'triangle',
-                                            'target-arrow-color': '#222',
+                                            'target-arrow-color': '#16d4fa',
                                             'curve-style': 'bezier'
                                         }
                                     },
                                     {
                                         'selector': 'edge:selected',
                                         'style': {
-                                            'line-color': '#0074D9',
-                                            'target-arrow-color': '#0074D9',
+                                            'line-color': '#ad3ef7',
+                                            'target-arrow-color': '#ad3ef7',
                                             'width': 8
+                                        }
+                                    },
+                                    {
+                                        'selector': '.added',
+                                        'style': {
+                                            'line-color': 'green',
+                                            'target-arrow-color': 'green',
+                                            'background-color': 'green',
+                                        }
+                                    },
+                                    {
+                                        'selector': '.to-remove',
+                                        'style': {
+                                            'line-color': 'red',
+                                            'target-arrow-color': 'red',
+                                            'background-color': 'red',
                                         }
                                     }
                                 ]

@@ -5,7 +5,20 @@
     transition: transform 0.1s ease;
 }
 
-.button:active{
+.button:disabled {
+    background-color: hsl(0, 0%, 68%);
+    color: #e7e7e7;
+    &:hover {
+        background-color: hsl(0, 0%, 68%);
+        cursor: not-allowed;
+    }
+    &:active {
+        transform: scale(1);
+    }
+    
+}
+
+.button:active {
     transform: scale(0.95);
 }
 
@@ -123,6 +136,15 @@
     position: absolute;
     font-weight: bolder;
     padding: 3px;
+}
+
+.feedback {
+    width: 100%;
+    padding: 5px;
+    background-color: rgb(190, 190, 190);
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
 }
 
 /* Global */
