@@ -217,7 +217,7 @@ def _right_section():
                     html.Div(
                         className='production-list',
                         children=[
-                            html.Button('Remove Production', id='remove-production-buttona', className='button secondaryButton')
+                            html.Button('Save Production', id='save-production', className='button secondaryButton')
                         ]
                     ),
                     html.Div(

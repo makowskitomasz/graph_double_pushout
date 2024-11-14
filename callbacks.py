@@ -134,7 +134,6 @@ def register_callbacks(app, base_graph):
             graph_G_prime.multi_digraph_from_nodes_edges(G_prime.nodes, G_prime.edges)
             graph_G_prime.elements = add_lock_to_all_graph_elements(graph_G_prime.elements)
 
-
             G_highlight_L = highlit_subgraf_in_graph(base_graph.elements, L.elements, 'added')
             G_highlight_L_minus_K = highlit_left_elements_which_does_not_exist_in_right(base_graph.elements, graph_Z.elements, 'to-remove')
             G_prime_highlited_mR_minus_mK = highlit_left_elements_which_does_not_exist_in_right(graph_G_prime.elements, graph_Z.elements, 'added')
@@ -205,6 +204,10 @@ def register_callbacks(app, base_graph):
             r_highlighted = highlit_left_elements_which_does_not_exist_in_right(r_graph.elements, k_graph.elements, 'added')
 
             return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, l_highlighted, k_graph.elements, r_highlighted, "", False
+        
+        elif button_id == 'save-production':
+            #TODO: Implement saving productions
+            return
 
         return dash.no_update, dash.no_update, "", "", True, True, l_elements, k_elements, r_elements, dash.no_update, True
 
