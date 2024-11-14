@@ -72,7 +72,9 @@ def register_callbacks(app, base_graph):
             return base_graph.elements, graph_data, descriptions[0], ""
 
         elif button_id == 'load-graph-button':
+            from app import GRAPH_FILE_PATH
             base_graph.from_csv('data/edges.csv')
+            base_graph.from_csv(GRAPH_FILE_PATH)
             base_graph.elements = add_lock_to_all_graph_elements(base_graph.elements)
             return base_graph.elements, graph_data, descriptions[0], ""
 
