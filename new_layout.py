@@ -144,8 +144,8 @@ def _right_section():
                             html.Div(
                                 className='buttonRow',
                                 children=[
-                                    html.Button('Previous Step', id='previous-step-button', className='button normalButton'),
-                                    html.Button('Next Step', id='next-step-button', className='button normalButton')
+                                    html.Button('Previous Step', id='previous-step-button', className='button normalButton', disabled=True),
+                                    html.Button('Next Step', id='next-step-button', className='button normalButton', disabled=True)
                                 ]
                             )
                         ]
