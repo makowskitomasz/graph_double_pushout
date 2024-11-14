@@ -62,7 +62,8 @@ def register_callbacks(app, base_graph):
 
         if button_id == 'add-node-button':
             base_graph.copy_from(elements)
-            node_id = str(len([element for element in base_graph.elements if 'source' not in element['data']]) + 1)
+            node_id = len([element for element in base_graph.elements if 'source' not in element['data']]) + 1
+            node_id = chr(64 + node_id)
             base_graph.add_node(node_id)
             return base_graph.elements, graph_data, descriptions[0], "", True, True, l_elements, k_elements, r_elements, dash.no_update, False
 
@@ -112,7 +113,7 @@ def register_callbacks(app, base_graph):
                     morphism[node['data']['id']] = node['data']['id']
                 dpo.define_morphism(morphism)
             else:
-                return dash.no_update, dash.no_update, "Please check the input graphs. Cannot apply the DPO production.", "Please check the input graphs. Cannot apply the DPO production.", True, True, l_elements, k_elements, r_elements, dash.no_update, False   
+                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Graph L is not isomorphic with G.", "Cannot apply the DPO production. Graph L is not isomorphic with G.", True, True, l_elements, k_elements, r_elements, dash.no_update, False   
 
             mL_minus_mK = dpo.calculate_mL_minus_mK()
             graph_mL_minus_mK = Graph()
@@ -143,7 +144,7 @@ def register_callbacks(app, base_graph):
             G_prime_highlited_mR_minus_mK = add_lock_to_all_graph_elements(G_prime_highlited_mR_minus_mK)
 
             if not nx.is_weakly_connected(Z) or not nx.is_weakly_connected(G_prime):
-                return dash.no_update, dash.no_update, "Please check the input graphs. Cannot apply the DPO production.", "Please check the input graphs. Cannot apply the DPO production.", True, True, l_elements, k_elements, r_elements, dash.no_update, False            
+                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Node would be left without connection.", "Cannot apply the DPO production. Node would be left without connection.", True, True, l_elements, k_elements, r_elements, dash.no_update, False            
 
             graph_elements = [base_graph.elements, G_highlight_L, G_highlight_L_minus_K, graph_Z.elements, G_prime_highlited_mR_minus_mK, graph_G_prime.elements]
 

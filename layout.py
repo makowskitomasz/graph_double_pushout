@@ -145,12 +145,8 @@ def _left_section():
                 },
                 children=[
                     html.Div(
-                        className='graph-caption',
-                        children=['Master Graph']
-                    ),
-                    html.Div(
                         id='graph-description',
-                        className='graph-description centered',
+                        className='graph-caption',
                         children=['Base Graph (G)']
                     ),
                     cyto.Cytoscape(
