@@ -71,7 +71,8 @@ def register_callbacks(app, base_graph):
             return base_graph.elements, graph_data, descriptions[0], ""
 
         elif button_id == 'load-graph-button':
-            base_graph.from_csv('data/edges.csv')
+            from app import GRAPH_FILE_PATH
+            base_graph.from_csv(GRAPH_FILE_PATH)
             return base_graph.elements, graph_data, descriptions[0], ""
 
         elif button_id == 'clear-graph-button':
