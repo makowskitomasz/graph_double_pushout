@@ -44,7 +44,8 @@ def register_callbacks(app, base_graph):
          Input('previous-step-button', 'n_clicks'),
          Input('remove-production-button', 'n_clicks'),
          Input('remove-all-productions-button', 'n_clicks'),
-         Input('import-productions-button', 'contents')],
+         Input('import-productions-button', 'contents'),
+         Input('save-production', 'n_clicks')],
         [State('main-graph', 'elements'),
          State('main-graph', 'selectedNodeData'),
          State('main-graph', 'selectedEdgeData'),
@@ -53,7 +54,7 @@ def register_callbacks(app, base_graph):
          State('graph-r', 'elements'),
          State('main-graph-data', 'data')],
     )
-    def update_graph(n_clicks_node, n_clicks_edge, n_clicks_remove, n_clicks_load, n_clicks_clear, n_clicks_apply, n_clicks_next, n_clicks_prev, n_clicks_remove_prod, n_clicks_remove_all, contents, elements, selected_nodes, selected_edges, l_elements, k_elements, r_elements, graph_data):
+    def update_graph(n_clicks_node, n_clicks_edge, n_clicks_remove, n_clicks_load, n_clicks_clear, n_clicks_apply, n_clicks_next, n_clicks_prev, n_clicks_remove_prod, n_clicks_remove_all, contents, n_clicks, elements, selected_nodes, selected_edges, l_elements, k_elements, r_elements, graph_data):
         ctx = dash.callback_context
         if not ctx.triggered:
             return elements, graph_data, "", "", True, True, l_elements, k_elements, r_elements, dash.no_update, True
@@ -206,8 +207,8 @@ def register_callbacks(app, base_graph):
             return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, l_highlighted, k_graph.elements, r_highlighted, "", False
         
         elif button_id == 'save-production':
-            #TODO: Implement saving productions
-            return
+            new_base_graph = graph_data['graphs'][-1] # Now the new base graph is the result from applying the last production
+            return new_base_graph, {'current_index': 0, 'graphs': [new_base_graph]}, descriptions[0], "", True, True, [], [], [], dash.no_update, True
 
         return dash.no_update, dash.no_update, "", "", True, True, l_elements, k_elements, r_elements, dash.no_update, True
 
