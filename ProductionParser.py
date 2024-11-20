@@ -1,4 +1,5 @@
 import networkx as nx
+from Graph import Graph
 
 class ProductionParser:
     def __init__(self):
@@ -14,6 +15,20 @@ class ProductionParser:
         graph.add_edges_from(edges)
         
         return graph
+    
+    def production_files(self, production_files):
+        lines = production_files.replace('\r','').strip().split('\n')
+        if len(lines) != 3:
+            raise ValueError("Input should contain exactly three lines for L, K, and R graphs.")
+
+        L = Graph()
+        K = Graph()
+        R = Graph()
+        L.from_csv(lines[0])
+        K.from_csv(lines[1])
+        R.from_csv(lines[2])
+        return L, K, R
+        
 
     def parse_productions(self, productions):
         lines = productions.strip().split('\n')

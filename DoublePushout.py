@@ -1,4 +1,5 @@
 import networkx as nx
+from networkx.algorithms.isomorphism import DiGraphMatcher
 
 class DoublePushout:
     def __init__(self, G, L, K, R):
@@ -8,30 +9,31 @@ class DoublePushout:
         self.R = nx.MultiDiGraph(R)  # Right graph R
         self.morphism = {}  # Morphism dictionary
 
-    def define_morphism(self, L_to_G_mapping):
-        self.morphism = L_to_G_mapping
+    def define_morphism(self):
+        def node_match(n1, n2):
+            return n1['label'] == n2['label']
+
+        matcher = DiGraphMatcher(self.G, self.L, node_match=node_match)
+        if matcher.subgraph_is_isomorphic():
+            self.morphism = {L_node: G_node for G_node, L_node in matcher.mapping.items()}
+            self.mL = nx.relabel_nodes(self.L, self.morphism).copy()
+            self.mK = nx.relabel_nodes(self.K, self.morphism).copy()
+            self.mR = nx.relabel_nodes(self.R, self.morphism).copy()
+        else:
+            raise ValueError("No isomorphic subgraph found")
 
     def calculate_mL_minus_mK(self):
-        mL_nodes = set(self.morphism.values())
-        mK_nodes = {self.morphism[n] for n in self.K.nodes if n in self.morphism}
-        mL_minus_mK_nodes = mL_nodes - mK_nodes
+        mL_minus_mK_nodes = list(self.mL.nodes - self.mK.nodes)
         mL_minus_mK = self.G.subgraph(mL_minus_mK_nodes).copy()
-        L_subgraph_from_K_nodes = self.L.subgraph(mK_nodes).copy()
+        L_subgraph_from_K_nodes = self.mL.subgraph(self.mK.nodes).copy()
         for edge in L_subgraph_from_K_nodes.edges:
-            if edge not in self.K.edges:
+            if edge not in self.mK.edges:
                 mL_minus_mK.add_edge(edge[0], edge[1], edge[2])
-        
-        print(mL_minus_mK)
-        print(mL_minus_mK.nodes)
-        print(mL_minus_mK.edges)
-        print(self.L)
-        print(self.K)
-            
         return mL_minus_mK
 
     def calculate_Z(self, mL_minus_mK):
         Z = self.G.copy()
-        Z.remove_nodes_from(mL_minus_mK.nodes)
+        Z.remove_edges_from(mL_minus_mK.edges)
         return Z
 
     def calculate_mR_minus_mK(self):

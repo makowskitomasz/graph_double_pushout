@@ -1,7 +1,7 @@
-source,target
-X,B
-A,X
-B,A
-B,D
-C,A
-D,X
+source_id,source_label,target_id,target_label
+B,L,A,R
+C,L,A,R
+D,L,A,R
+B,L,C,L
+C,L,D,L
+B,L,D,L

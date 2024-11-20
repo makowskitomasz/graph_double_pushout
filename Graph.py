@@ -1,3 +1,4 @@
+# GRAPH.PY
 import pandas as pd
 import networkx as nx
 import numpy as np
@@ -12,11 +13,11 @@ class Graph:
     def get_elements_data(self):
         return [element['data'] for element in self.elements]
     
-    def add_node(self, node_id, **attrs):
-        self.graph.add_node(node_id, **attrs)
+    def add_node(self, node_id, label=None, **attrs):
+        self.graph.add_node(node_id, label=label, **attrs)
         self.positions[node_id] = calculate_position_of_new_node(self)
         self.elements.append({
-            'data': {'id': node_id, 'label': node_id},
+            'data': {'id': node_id, 'label': label or node_id},
             'position': {'x': self.positions[node_id][0], 'y': self.positions[node_id][1]}
         })
 
@@ -44,30 +45,33 @@ class Graph:
             edge_id = f"{source}-{target}"
             self.elements = [el for el in self.elements if el['data']['id'] != edge_id]
 
-    def from_nodes_edges(self, nodes, edges):
+    def from_nodes_edges(self, nodes, edges, label_dict=None):
         self.graph.add_nodes_from(nodes)
         self.graph.add_edges_from(edges)
         self.positions = deterministic_layout(self.graph)
-        self.elements = self.to_cyto_elements()
+        self.elements = self.to_cyto_elements(label_dict)
 
-    def multi_digraph_from_nodes_edges(self, nodes, edges):
+    def multi_digraph_from_nodes_edges(self, nodes, edges, label_dict=None):
         self.graph = nx.MultiDiGraph()
         self.graph.add_nodes_from(nodes)
         self.graph.add_edges_from(edges)
         self.positions = deterministic_layout(self.graph)
-        self.elements = self.to_cyto_elements()
+        self.elements = self.to_cyto_elements(label_dict)
 
     def from_csv(self, file_path):
         df = pd.read_csv(file_path)
-        self.graph = nx.from_pandas_edgelist(df, 'source', 'target', create_using=nx.DiGraph())
+        for _, row in df.iterrows():
+            self.add_node(row['source_id'], label=row['source_label'])
+            self.add_node(row['target_id'], label=row['target_label'])
+            self.add_edge(row['source_id'], row['target_id'])
         self.positions = deterministic_layout(self.graph)
         self.elements = self.to_cyto_elements()
 
-    def to_cyto_elements(self):
+    def to_cyto_elements(self, label_dict=None):
         cyto_elements = []
         for node, pos in self.positions.items():
             cyto_elements.append({
-                'data': {'id': node, 'label': node},
+                'data': {'id': node, 'label': label_dict[node] if label_dict else self.graph.nodes[node].get('label', node)},
                 'position': {'x': pos[0], 'y': pos[1]}
             })
         for edge in self.graph.edges(data=True):
@@ -81,7 +85,7 @@ class Graph:
         return cyto_elements
 
     def is_subgraph(self, subgraph):
-        return nx.is_isomorphic(self.graph, subgraph.graph, edge_match=lambda e1, e2: e1.get('label') == e2.get('label'))
+        return nx.is_isomorphic(self.graph, subgraph.graph, node_match=lambda n1, n2: n1['label'] == n2['label'], edge_match=lambda e1, e2: e1.get('label') == e2.get('label'))
     
     def clear(self):
         self.graph.clear()
@@ -94,7 +98,7 @@ class Graph:
             if 'source' in el['data']:
                 self.add_edge(el['data']['source'], el['data']['target'], el['data'].get('label'))
             else:
-                self.add_node(el['data']['id'])
+                self.add_node(el['data']['id'], label=el['data'].get('label'))
 
     
     def remove_elements(self, selected_nodes, selected_edges):

@@ -1,3 +1,4 @@
+# CALLBACKS.PY CONTEXT
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
 import dash_cytoscape as cyto
@@ -104,39 +105,43 @@ def register_callbacks(app, base_graph):
             R = Graph()
             R.copy_from(r_elements)
 
+            labels_dict = {}
+
+            for graph in [base_graph, L, K, R]:
+                for node in graph.elements:
+                    if 'id' in node['data'] and 'label' in node['data'] and 'source' not in node['data']:
+                        labels_dict[node['data']['id']] = node['data']['label']
+            
+
             dpo = DoublePushout(base_graph.graph, L.graph, K.graph, R.graph)
 
-            if all(edge in base_graph.graph.edges() for edge in L.graph.edges()):
-                morphism = {}
-                for node in L.elements:
-                    if 'source' in node['data']:
-                        continue
-                    morphism[node['data']['id']] = node['data']['id']
-                dpo.define_morphism(morphism)
-            else:
-                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Graph L is not isomorphic with G.", "Cannot apply the DPO production. Graph L is not isomorphic with G.", True, True, l_elements, k_elements, r_elements, dash.no_update, False   
-
+            try:
+                dpo.define_morphism()
+            except ValueError as e:
+                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Graph L is not isomorphic with G.", str(e), True, True, l_elements, k_elements, r_elements, dash.no_update, False
+            
             mL_minus_mK = dpo.calculate_mL_minus_mK()
             graph_mL_minus_mK = Graph()
-            graph_mL_minus_mK.multi_digraph_from_nodes_edges(mL_minus_mK.nodes, mL_minus_mK.edges)
+            graph_mL_minus_mK.multi_digraph_from_nodes_edges(mL_minus_mK.nodes, mL_minus_mK.edges, labels_dict)
             graph_mL_minus_mK.elements = add_lock_to_all_graph_elements(graph_mL_minus_mK.elements)
-
+            
             Z = dpo.calculate_Z(mL_minus_mK)
             graph_Z = Graph()
-            graph_Z.multi_digraph_from_nodes_edges(Z.nodes, Z.edges)
+            graph_Z.multi_digraph_from_nodes_edges(Z.nodes, Z.edges, labels_dict)
             graph_Z.elements = add_lock_to_all_graph_elements(graph_Z.elements)
 
             mR_minus_mK = dpo.calculate_mR_minus_mK()
             graph_mR_minus_mK = Graph()
-            graph_mR_minus_mK.multi_digraph_from_nodes_edges(mR_minus_mK.nodes, mR_minus_mK.edges)
+
+            graph_mR_minus_mK.multi_digraph_from_nodes_edges(mR_minus_mK.nodes, mR_minus_mK.edges, labels_dict)
             graph_mR_minus_mK.elements = add_lock_to_all_graph_elements(graph_mR_minus_mK.elements)
 
             G_prime = dpo.create_G_prime(Z, mR_minus_mK)
             graph_G_prime = Graph()
-            graph_G_prime.multi_digraph_from_nodes_edges(G_prime.nodes, G_prime.edges)
+            graph_G_prime.multi_digraph_from_nodes_edges(G_prime.nodes, G_prime.edges, labels_dict)
             graph_G_prime.elements = add_lock_to_all_graph_elements(graph_G_prime.elements)
-
-            G_highlight_L = highlit_subgraf_in_graph(base_graph.elements, L.elements, 'added')
+            
+            G_highlight_L = highlit_subgraf_in_graph(base_graph.elements, L.elements, dpo.morphism, 'added')
             G_highlight_L_minus_K = highlit_left_elements_which_does_not_exist_in_right(base_graph.elements, graph_Z.elements, 'to-remove')
             G_prime_highlited_mR_minus_mK = highlit_left_elements_which_does_not_exist_in_right(graph_G_prime.elements, graph_Z.elements, 'added')
 
@@ -191,13 +196,8 @@ def register_callbacks(app, base_graph):
             content = decoded.decode('utf-8')
 
             parser = ProductionParser()
-            L, K, R = parser.parse_productions(content)
-            l_graph = Graph()
-            k_graph = Graph()
-            r_graph = Graph()
-            l_graph.from_nodes_edges(L.nodes, L.edges)
-            k_graph.from_nodes_edges(K.nodes, K.edges)
-            r_graph.from_nodes_edges(R.nodes, R.edges)
+            l_graph, k_graph, r_graph = parser.production_files(content)
+
             deterministic_layout(l_graph.graph)
             deterministic_layout(k_graph.graph)
             deterministic_layout(r_graph.graph)
@@ -224,18 +224,34 @@ def register_callbacks(app, base_graph):
             return get_default_graph_layout()
         return dash.no_update
 
-def highlit_subgraf_in_graph(base_graph_elements, subgraph_elements, tag):
+def highlit_subgraf_in_graph(base_graph_elements, subgraph_elements, morphism, tag):
     output_elements = []
+
+    subgraph_node_ids = {morphism[node['data']['id']] for node in subgraph_elements
+                         if 'id' in node['data'] and 'source' not in node['data']}
+    subgraph_edge_ids = {
+        (morphism[edge['data']['source']], morphism[edge['data']['target']])
+        for edge in subgraph_elements if 'source' in edge['data'] and 'target' in edge['data']
+    }
+
     for element in base_graph_elements:
         element_copy = element.copy()
-        element_copy['classes'] = ''
-        if element_copy['data'] in [i['data'] for i in subgraph_elements]:
-            if 'classes' in element_copy.keys():
-                element_copy['classes'] += f' {tag}'
-            else:
-                element_copy['classes'] = f' {tag}'
+        element_copy['classes'] = element_copy.get('classes', '').strip()
+
+        if 'source' in element_copy['data']:
+            source = morphism.get(element_copy['data']['source'], element_copy['data']['source'])
+            target = morphism.get(element_copy['data']['target'], element_copy['data']['target'])
+            if (source, target) in subgraph_edge_ids:
+                element_copy['classes'] = f"{element_copy['classes']} {tag}".strip()
+        elif 'id' in element_copy['data']:
+            node_id = morphism.get(element_copy['data']['id'], element_copy['data']['id'])
+            if node_id in subgraph_node_ids:
+                element_copy['classes'] = f"{element_copy['classes']} {tag}".strip()
+
         output_elements.append(element_copy)
+
     return output_elements
+
 
 def highlit_left_elements_which_does_not_exist_in_right(left_graph_elements, right_graph_elements, tag):
     output_elements = []
