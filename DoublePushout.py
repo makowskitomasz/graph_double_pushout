@@ -16,6 +16,17 @@ class DoublePushout:
         mK_nodes = {self.morphism[n] for n in self.K.nodes if n in self.morphism}
         mL_minus_mK_nodes = mL_nodes - mK_nodes
         mL_minus_mK = self.G.subgraph(mL_minus_mK_nodes).copy()
+        L_subgraph_from_K_nodes = self.L.subgraph(mK_nodes).copy()
+        for edge in L_subgraph_from_K_nodes.edges:
+            if edge not in self.K.edges:
+                mL_minus_mK.add_edge(edge[0], edge[1], edge[2])
+        
+        print(mL_minus_mK)
+        print(mL_minus_mK.nodes)
+        print(mL_minus_mK.edges)
+        print(self.L)
+        print(self.K)
+            
         return mL_minus_mK
 
     def calculate_Z(self, mL_minus_mK):
