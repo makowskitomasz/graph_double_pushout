@@ -7,7 +7,7 @@ from callbacks import register_callbacks
 app = dash.Dash(__name__)
 app.config.suppress_callback_exceptions = True 
 
-GRAPH_FILE_PATH = 'data/case_3/edges.csv'
+GRAPH_FILE_PATH = 'data/case_1/edges.csv'
 
 base_graph = Graph()
 base_graph.from_csv(GRAPH_FILE_PATH)

@@ -1,5 +1,5 @@
-source,target
-C,X
-A,B
-B,C
-A,C
+source_id,source_label,target_id,target_label
+C,C,X,X
+A,A,B,B
+B,B,C,C
+A,A,C,C

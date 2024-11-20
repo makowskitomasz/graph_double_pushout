@@ -24,16 +24,20 @@ class DoublePushout:
 
     def calculate_mL_minus_mK(self):
         mL_minus_mK_nodes = list(self.mL.nodes - self.mK.nodes)
+        self.nodes_to_remove = mL_minus_mK_nodes
+        self.edges_to_remove = list()
         mL_minus_mK = self.G.subgraph(mL_minus_mK_nodes).copy()
         L_subgraph_from_K_nodes = self.mL.subgraph(self.mK.nodes).copy()
         for edge in L_subgraph_from_K_nodes.edges:
             if edge not in self.mK.edges:
+                self.edges_to_remove.append(edge)
                 mL_minus_mK.add_edge(edge[0], edge[1], edge[2])
         return mL_minus_mK
 
     def calculate_Z(self, mL_minus_mK):
         Z = self.G.copy()
-        Z.remove_edges_from(mL_minus_mK.edges)
+        Z.remove_nodes_from(self.nodes_to_remove)
+        Z.remove_edges_from(self.edges_to_remove)
         return Z
 
     def calculate_mR_minus_mK(self):

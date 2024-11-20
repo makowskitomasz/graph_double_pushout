@@ -1,0 +1,11 @@
+source_id,source_label,target_id,target_label
+H,H,B,B
+B,B,C,C
+C,C,G,G
+E,E,H,H
+E,E,B,B
+E,E,C,C
+F,F,B,B
+F,F,C,C
+F,F,E,E
+G,G,B,B

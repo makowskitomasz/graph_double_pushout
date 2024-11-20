@@ -1,8 +1,7 @@
-source,target
-
-A,B
-A,E
-B,C
-C,D
-D,E
-E,B
+source_id,source_label,target_id,target_label
+A,A,B,B
+A,A,E,E
+B,B,C,C
+C,C,D,D
+D,D,E,E
+E,E,B,B

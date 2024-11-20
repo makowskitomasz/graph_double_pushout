@@ -110,9 +110,8 @@ def register_callbacks(app, base_graph):
             for graph in [base_graph, L, K, R]:
                 for node in graph.elements:
                     if 'id' in node['data'] and 'label' in node['data'] and 'source' not in node['data']:
-                        labels_dict[node['data']['id']] = node['data']['label']
+                        labels_dict[node['data']['id']] = node['data']['label']         
             
-
             dpo = DoublePushout(base_graph.graph, L.graph, K.graph, R.graph)
 
             try:

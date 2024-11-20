@@ -1,0 +1,4 @@
+source_id,source_label,target_id,target_label
+A,A,B,B
+A,A,C,C
+C,C,B,B

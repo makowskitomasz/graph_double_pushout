@@ -62,6 +62,8 @@ class Graph:
         df = pd.read_csv(file_path)
         for _, row in df.iterrows():
             self.add_node(row['source_id'], label=row['source_label'])
+            if pd.isna(row['target_id']):
+                continue
             self.add_node(row['target_id'], label=row['target_label'])
             self.add_edge(row['source_id'], row['target_id'])
         self.positions = deterministic_layout(self.graph)
