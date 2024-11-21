@@ -47,11 +47,11 @@ class DoublePushout:
 
     def create_G_prime(self, Z, mR_minus_mK):
         edges_to_add = list()
-        for edge in self.R.edges:
+        
+        for edge in self.mR.edges:
             source, target, frequency = edge
-            if (source in mR_minus_mK.nodes or target in mR_minus_mK.nodes) and edge not in mR_minus_mK.edges:
+            if edge not in Z.edges and edge not in mR_minus_mK.edges:
                 edges_to_add.append(edge)
-
         for index, edge in enumerate(edges_to_add):
             source, target, frequency = edge
             if source in self.morphism.keys():
