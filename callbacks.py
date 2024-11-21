@@ -110,20 +110,52 @@ def register_callbacks(app, base_graph):
             for graph in [base_graph, L, K, R]:
                 for node in graph.elements:
                     if 'id' in node['data'] and 'label' in node['data'] and 'source' not in node['data']:
-                        labels_dict[node['data']['id']] = node['data']['label']         
-            
+                        labels_dict[node['data']['id']] = node['data']['label']        
+
+            tmp_nodes = {}
+            for graph in [L, K, R]:
+                for node in graph.graph.nodes:
+                    if node in base_graph.graph.nodes:
+                        new_node = node + "'"
+                        while new_node in labels_dict.keys():
+                            new_node = new_node + "'"
+                        tmp_nodes[node] = new_node
+                        labels_dict[new_node] = labels_dict[node]
+                    else:
+                        tmp_nodes[node] = node
+
+            def update_elements_with_new_labels(graph, labels_dict):
+                new_elements = []
+                for element in graph.elements:
+                    new_element = element.copy()
+                    if 'source' in new_element['data'] and 'target' in new_element['data']:
+                        new_element['data']['source'] = labels_dict.get(new_element['data']['source'], new_element['data']['source'])
+                        new_element['data']['target'] = labels_dict.get(new_element['data']['target'], new_element['data']['target'])
+                    elif 'id' in new_element['data']:
+                        new_element['data']['id'] = labels_dict.get(new_element['data']['id'], new_element['data']['id'])
+                    new_elements.append(new_element)
+                return new_elements
+
+            L.graph = nx.relabel_nodes(L.graph, tmp_nodes).copy()
+            L.elements = update_elements_with_new_labels(L, tmp_nodes)
+
+            K.graph = nx.relabel_nodes(K.graph, tmp_nodes).copy()
+            K.elements = update_elements_with_new_labels(K, tmp_nodes)
+
+            R.graph = nx.relabel_nodes(R.graph, tmp_nodes).copy()
+            R.elements = update_elements_with_new_labels(R, tmp_nodes)
             dpo = DoublePushout(base_graph.graph, L.graph, K.graph, R.graph)
 
             try:
                 dpo.define_morphism()
             except ValueError as e:
-                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Graph L is not isomorphic with G.", str(e), True, True, l_elements, k_elements, r_elements, dash.no_update, False
+                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Graph L is not isomorphic with G.", str(e), True, True, l_elements, k_elements, r_elements, dash.no_update, True
             
             mL_minus_mK = dpo.calculate_mL_minus_mK()
             graph_mL_minus_mK = Graph()
             graph_mL_minus_mK.multi_digraph_from_nodes_edges(mL_minus_mK.nodes, mL_minus_mK.edges, labels_dict)
             graph_mL_minus_mK.elements = add_lock_to_all_graph_elements(graph_mL_minus_mK.elements)
-            
+
             Z = dpo.calculate_Z(mL_minus_mK)
             graph_Z = Graph()
             graph_Z.multi_digraph_from_nodes_edges(Z.nodes, Z.edges, labels_dict)
@@ -149,13 +181,13 @@ def register_callbacks(app, base_graph):
             G_prime_highlited_mR_minus_mK = add_lock_to_all_graph_elements(G_prime_highlited_mR_minus_mK)
 
             if not nx.is_weakly_connected(Z) or not nx.is_weakly_connected(G_prime):
-                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Node would be left without connection.", "Cannot apply the DPO production. Node would be left without connection.", True, True, l_elements, k_elements, r_elements, dash.no_update, False            
+                return dash.no_update, dash.no_update, "Cannot apply the DPO production. Node would be left without connection.", "Cannot apply the DPO production. Node would be left without connection.", True, True, l_elements, k_elements, r_elements, dash.no_update, True            
 
             graph_elements = [base_graph.elements, G_highlight_L, G_highlight_L_minus_K, graph_Z.elements, G_prime_highlited_mR_minus_mK, graph_G_prime.elements]
 
             graph_elements = [fill_classes_as_empty_if_does_not_exist(i) for i in graph_elements]                
             graph_data = {'current_index': 0, 'graphs': graph_elements}
-            return graph_elements[0], graph_data, descriptions[0], "", False, True, l_elements, k_elements, r_elements, dash.no_update, False
+            return graph_elements[0], graph_data, descriptions[0], "", False, True, l_elements, k_elements, r_elements, dash.no_update, True
 
         elif button_id == 'next-step-button' or button_id == 'previous-step-button':
             def can_go_backward(graph_data):
@@ -164,7 +196,7 @@ def register_callbacks(app, base_graph):
                 return graph_data['current_index'] < len(graph_data['graphs']) - 1
 
             if graph_data is None or 'graphs' not in graph_data:
-                return dash.no_update, dash.no_update, dash.no_update, dash.no_update, True, True, l_elements, k_elements, r_elements, dash.no_update, False
+                return dash.no_update, dash.no_update, dash.no_update, dash.no_update, True, True, l_elements, k_elements, r_elements, dash.no_update, True
 
             current_index = graph_data['current_index']
             graphs = graph_data['graphs']
@@ -175,7 +207,7 @@ def register_callbacks(app, base_graph):
                 current_index = (current_index - 1)
 
             graph_data['current_index'] = current_index
-            return graphs[current_index], graph_data, descriptions[current_index], "", not can_go_forward(graph_data), not can_go_backward(graph_data), l_elements, k_elements, r_elements, dash.no_update, False
+            return graphs[current_index], graph_data, descriptions[current_index], "", not can_go_forward(graph_data), not can_go_backward(graph_data), l_elements, k_elements, r_elements, dash.no_update, True
 
         elif button_id == 'remove-production-button':
             if base_graph.elements:

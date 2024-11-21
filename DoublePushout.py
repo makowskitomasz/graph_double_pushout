@@ -12,7 +12,6 @@ class DoublePushout:
     def define_morphism(self):
         def node_match(n1, n2):
             return n1['label'] == n2['label']
-
         matcher = DiGraphMatcher(self.G, self.L, node_match=node_match)
         if matcher.subgraph_is_isomorphic():
             self.morphism = {L_node: G_node for G_node, L_node in matcher.mapping.items()}
