@@ -54,6 +54,8 @@ def register_callbacks(app, base_graph):
          State('graph-k', 'elements'),
          State('graph-r', 'elements'),
          State('main-graph-data', 'data')],
+        prevent_initial_call=True,
+        allow_duplicate=True
     )
     def update_graph(n_clicks_node, n_clicks_edge, n_clicks_remove, n_clicks_load, n_clicks_clear, n_clicks_apply, n_clicks_next, n_clicks_prev, n_clicks_remove_prod, n_clicks_remove_all, contents, n_clicks, elements, selected_nodes, selected_edges, l_elements, k_elements, r_elements, graph_data):
         
@@ -99,7 +101,9 @@ def register_callbacks(app, base_graph):
             return base_graph.elements, graph_data, descriptions[0], "", True, True, l_elements, k_elements, r_elements, dash.no_update, True
 
         elif button_id == 'apply-production-button':
-            base_graph.copy_from(elements)
+            base_graph.copy_from(add_lock_to_all_graph_elements(elements))
+            print
+            base_graph.elements = add_lock_to_all_graph_elements(base_graph.elements)
 
             L = Graph()
             L.copy_from(l_elements)
@@ -257,13 +261,17 @@ def register_callbacks(app, base_graph):
 
     @app.callback(
         Output('main-graph', 'layout'),
+        Output('main-graph', 'elements', allow_duplicate=True),
         Input('reset-view-button', 'n_clicks'),
-        prevent_initial_call=True
+        State('main-graph', 'elements'),
+        prevent_initial_call=True,
+        allow_duplicate=True
     )
-    def reset_graph_view(n_clicks):
+    def reset_graph_view(n_clicks, elements):
         ctx = dash.callback_context
         if ctx.triggered:
-            return get_default_graph_layout()
+            new_elements = remove_lock_from_all_graph_elements(elements)
+            return get_default_graph_layout(), new_elements
         return dash.no_update
 
 def highlit_subgraf_in_graph(base_graph_elements, subgraph_elements, morphism, tag):
@@ -348,5 +356,13 @@ def add_lock_to_all_graph_elements(elements):
     for i in elements:
         z = i.copy()
         z['locked'] = True
+        new_elements.append(z)
+    return new_elements
+
+def remove_lock_from_all_graph_elements(elements):
+    new_elements = []
+    for i in elements:
+        z = i.copy()
+        z['locked'] = False
         new_elements.append(z)
     return new_elements

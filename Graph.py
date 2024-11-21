@@ -13,12 +13,16 @@ class Graph:
     def get_elements_data(self):
         return [element['data'] for element in self.elements]
     
-    def add_node(self, node_id, label=None, **attrs):
+    def add_node(self, node_id, label=None, position=None, locked=False, **attrs):
         self.graph.add_node(node_id, label=label, **attrs)
-        self.positions[node_id] = calculate_position_of_new_node(self)
+        if position:
+            self.positions[node_id] = (position['x'], position['y'])
+        else:
+            self.positions[node_id] = calculate_position_of_new_node(self)
         self.elements.append({
             'data': {'id': node_id, 'label': label or node_id},
-            'position': {'x': self.positions[node_id][0], 'y': self.positions[node_id][1]}
+            'position': {'x': self.positions[node_id][0], 'y': self.positions[node_id][1]},
+            'locked': locked
         })
 
     def add_edge(self, source, target, label=None):
@@ -100,7 +104,10 @@ class Graph:
             if 'source' in el['data']:
                 self.add_edge(el['data']['source'], el['data']['target'], el['data'].get('label'))
             else:
-                self.add_node(el['data']['id'], label=el['data'].get('label'))
+                if 'locked' in el:
+                    self.add_node(el['data']['id'], label=el['data'].get('label'), position=el['position'], locked=el['locked'])
+                else:
+                    self.add_node(el['data']['id'], label=el['data'].get('label'), position=el['position'])
 
     
     def remove_elements(self, selected_nodes, selected_edges):
