@@ -56,6 +56,7 @@ def register_callbacks(app, base_graph):
          State('main-graph-data', 'data')],
     )
     def update_graph(n_clicks_node, n_clicks_edge, n_clicks_remove, n_clicks_load, n_clicks_clear, n_clicks_apply, n_clicks_next, n_clicks_prev, n_clicks_remove_prod, n_clicks_remove_all, contents, n_clicks, elements, selected_nodes, selected_edges, l_elements, k_elements, r_elements, graph_data):
+        
         ctx = dash.callback_context
         if not ctx.triggered:
             return elements, graph_data, "", "", True, True, l_elements, k_elements, r_elements, dash.no_update, True
@@ -87,7 +88,11 @@ def register_callbacks(app, base_graph):
             from app import GRAPH_FILE_PATH
             base_graph.from_csv(GRAPH_FILE_PATH)
             base_graph.elements = add_lock_to_all_graph_elements(base_graph.elements)
-            return base_graph.elements, graph_data, descriptions[0], "", True, True, l_elements, k_elements, r_elements, dash.no_update, False
+            if base_graph.elements and l_elements and k_elements and r_elements:
+                apply_production_disabled = False
+            else:
+                apply_production_disabled = True
+            return base_graph.elements, graph_data, descriptions[0], "", True, True, l_elements, k_elements, r_elements, dash.no_update, apply_production_disabled
 
         elif button_id == 'clear-graph-button':
             base_graph.clear()
@@ -216,6 +221,7 @@ def register_callbacks(app, base_graph):
                 return [], {'current_index': 0, 'graphs': []}, "", "", True, True, [], [], [], dash.no_update, True
 
         elif button_id == 'remove-all-productions-button':
+            base_graph.clear()
             return [], {'current_index': 0, 'graphs': []}, "", "", True, True, [], [], [], dash.no_update, True
 
         elif button_id == 'import-productions-button':
@@ -236,7 +242,12 @@ def register_callbacks(app, base_graph):
             l_highlighted = highlit_left_elements_which_does_not_exist_in_right(l_graph.elements, k_graph.elements, 'to-remove')
             r_highlighted = highlit_left_elements_which_does_not_exist_in_right(r_graph.elements, k_graph.elements, 'added')
 
-            return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, l_highlighted, k_graph.elements, r_highlighted, "", False
+            if base_graph.elements:
+                apply_production_disabled = False
+            else:
+                apply_production_disabled = True
+
+            return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, l_highlighted, k_graph.elements, r_highlighted, "", apply_production_disabled
         
         elif button_id == 'save-production':
             new_base_graph = graph_data['graphs'][-1] # Now the new base graph is the result from applying the last production
