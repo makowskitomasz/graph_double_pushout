@@ -1,7 +1,5 @@
 # CALLBACKS.PY CONTEXT
 from dash.dependencies import Input, Output, State
-from dash import html, dcc
-import dash_cytoscape as cyto
 from Graph import Graph
 import dash
 from utils import get_default_graph_layout
@@ -9,8 +7,6 @@ from Graph import deterministic_layout
 from ProductionParser import ProductionParser
 from DoublePushout import DoublePushout
 import base64
-import io
-from networkx.algorithms.isomorphism import DiGraphMatcher
 import networkx as nx
 
 def register_callbacks(app, base_graph):
