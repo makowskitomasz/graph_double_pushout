@@ -2,6 +2,12 @@
 
 This project implements a graph transformation system using the Double Pushout (DPO) approach. It includes a web application built with Dash for visualizing and interacting with graph transformations.
 
+Collaborators:
+- Tomasz Makowski
+- Maciej Pieniążek
+- Patryk Lesiak
+- Wojciech Neuman
+
 ## Project Structure
 
 - `app.py`: The main entry point for the Dash application.
